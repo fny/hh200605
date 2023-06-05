@@ -8,7 +8,7 @@ OPENAI_API_KEY=
 COHERE_API_KEY=
 ```
 
-Start the server with `node index.js`
+Install packages with `npm i`. Start the server with `node index.js`
 
 Make post requests to `localhost:3000/create_prompt` to create a prompt. The body of the request should include the complete payload.
 
@@ -39,6 +39,8 @@ POST /create_completeion
 
 # => { "success": true, "response": ... }
 ```
+
+Errors will be returned if any parameters are unknown or missing.
 
 ## ChatGPT
 
