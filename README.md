@@ -42,18 +42,21 @@ POST /create_completeion
 
 ## ChatGPT
 
-You can chat with a single instance of ChatGPT by invoking the following:
+You can chat with an identifiable instance of ChatGPT by invoking the following:
 
 ```
-POST /chat
+POST /chat/1
 {
     "prompt": "My favorite color is yellow. What is your favorite color?",
     "hyperparameters": ...
 }
+# => As an AI language model, I do not have personal preferences or emotions. I am designed to assist and answer questions to the best of my ability without bias.
 
-POST /chat
+POST /chat/1
 {
     "prompt": "What is my favorite color?"
     "hyperparameters": ...
 }
+
+# => You previously mentioned that your favorite color is yellow.
 ```

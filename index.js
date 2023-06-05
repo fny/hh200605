@@ -105,17 +105,16 @@ fastify.route({
   }
 })
 
-const chatHistory = []
-
+const chats = {}
 fastify.route({
   method: 'POST',
-  url: '/chat',
+  url: '/chat/:chatId',
   schema: {
     body: {
       type: 'object',
       properties: {
         prompt: { type: 'string' },
-        hyperparameters: { type: 'object' },
+        hyperparameters: { type: 'object'},
       },
       required: ['prompt'],
     },
@@ -132,19 +131,24 @@ fastify.route({
     }
   },
   handler: async (request, reply) => {
-    chatHistory.push({
+    const chatId = request.params.chatId
+    if (!chats[chatId]) {
+      chats[chatId] = []
+    }
+    console.log(chats[chatId])
+    chats[chatId].push({
       role: 'user', content: request.body.prompt
     })
     hyperparameters = request.body.hyperparameters || {}
-    const response = await models.chatgpt3.run(chatHistory, hyperparameters)
 
-    chatHistory.push({
+    const response = await models.chatgpt3.run(chats[chatId], hyperparameters)
+    chats[chatId].push({
       role: 'assistant', content: response
     })
-
     return { success: true, prompt: request.body.prompt, response }
   }
 })
+
 
 const start = async () => {
   try {
