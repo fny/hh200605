@@ -18,7 +18,7 @@ POST /create_prompt
 	"name": "test_command",
 	"prompt_template": "I want you to act as a naming consultant for new companies.\n\nWhat is a good name for a company that makes ?",
 	"model": "command",
-    "hyperparameters": { ... }
+   	"hyperparameters": { ... }
 }
 
 # => { "success": true }
