@@ -91,12 +91,58 @@ fastify.route({
 
     const model = models[prompt.model]
     if (!model) {
-      reply.code(400).send({ success: false, error: 'model not found' })
+      reply.code(400).send({ success: false, error: 'Model not found' })
       return
     }
 
-    const response = await model.run(promptTemplate, prompt.hyperparameters)
-    return { success: true, prompt: promptTemplate, response }
+    try {
+      const response = await model.run(promptTemplate, prompt.hyperparameters)
+      return { success: true, prompt: promptTemplate, response }
+    } catch (e) {
+      console.error("Error running model!", e)
+      reply.code(400).send({ success: false, error: e })
+    }
+  }
+})
+
+const chatHistory = []
+
+fastify.route({
+  method: 'POST',
+  url: '/chat',
+  schema: {
+    body: {
+      type: 'object',
+      properties: {
+        prompt: { type: 'string' },
+        hyperparameters: { type: 'object' },
+      },
+      required: ['prompt'],
+    },
+    response: {
+      200: {
+        type: 'object',
+        properties: {
+          success: { type: 'boolean' },
+          prompt: { type: 'string' },
+          response: { type: 'string' },
+          hyperparameters: { type: 'object' },
+        }
+      }
+    }
+  },
+  handler: async (request, reply) => {
+    chatHistory.push({
+      role: 'user', content: request.body.prompt
+    })
+    hyperparameters = request.body.hyperparameters || {}
+    const response = await models.chatgpt3.run(chatHistory, hyperparameters)
+
+    chatHistory.push({
+      role: 'assistant', content: response
+    })
+
+    return { success: true, prompt: request.body.prompt, response }
   }
 })
 

@@ -100,3 +100,35 @@ exports.command = {
     return response.data.generations[0].text
   }
 }
+
+exports.chatgpt3 = {
+  hyperparamSchema: {
+    type: 'object',
+    properties: {
+      suffix: { type: 'string' },
+      max_tokens: { type: 'integer' },
+      temperature: { type: 'number' },
+      top_p: { type: 'number' },
+      n: { type: 'integer' },
+      logprobs: { type: 'integer' },
+      echo: { type: 'boolean' },
+      stop: { type: 'string' },
+      presence_penalty: { type: 'number' },
+      frequency_penalty: { type: 'number' },
+      best_of: { type: 'integer' },
+    },
+  },
+  run: async (messages, hyperparameters) => {
+    const { Configuration, OpenAIApi } = require("openai");
+    const configuration = new Configuration({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+    const openai = new OpenAIApi(configuration);
+    const response = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages,
+      ...hyperparameters,
+    });
+    return response.data.choices[0].message.content
+  }
+}
